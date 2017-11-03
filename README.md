@@ -6,7 +6,7 @@ Deep Learning Course 2017
 ## Presentation 1
 ### List
 
-1.胥拿云
+1.吴怡然
 
 2.许臻佳
 

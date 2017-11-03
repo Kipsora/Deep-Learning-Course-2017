@@ -18,7 +18,7 @@ Deep Learning Course 2017
 
 6.杨嘉成
 
-7.陈欣昊
+7.徐植天
 
 8.龙思杉
 

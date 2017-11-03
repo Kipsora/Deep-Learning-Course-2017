@@ -16,7 +16,7 @@ Deep Learning Course 2017
 
 5.郑怜悯
 
-6.杨嘉成
+6.曹孟尧
 
 7.徐植天
 

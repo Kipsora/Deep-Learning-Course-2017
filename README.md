@@ -4,7 +4,7 @@ Deep Learning Course 2017
 1.Presentation 1: [2017/11/10 14:00 - 16:00]
 
 ## Presentation 1
-###List:
+### List:
 1.胥拿云
 2.许臻佳
 3.孔冰玉

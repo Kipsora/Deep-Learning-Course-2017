@@ -1,7 +1,7 @@
 # Deep-Learning-Course-2017
 Deep Learning Course 2017
 
-1.Presentation 1: [2017/11/10 14:00 - 16:00]
+**1.Presentation 1: [2017/11/10 14:00 - 16:00]**
 
 ## Presentation 1
 ### List:
@@ -28,4 +28,5 @@ Deep Learning Course 2017
 
 ### Deadline
 Please send the paper to TA's mail `caodi0207@sjtu.edu.cn` before 11/8 24:00.
+
 Please send the PPT to TA's mail `caodi0207@sjtu.edu.cn` before 11/10 12:00.

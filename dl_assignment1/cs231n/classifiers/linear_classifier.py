@@ -114,7 +114,7 @@ class LinearClassifier(object):
     """
     pass
 
-
+# Please ignore this class
 class LinearSVM(LinearClassifier):
   """ A subclass that uses the Multiclass SVM loss function """
 

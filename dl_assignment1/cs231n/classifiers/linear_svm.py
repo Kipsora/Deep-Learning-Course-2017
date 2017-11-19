@@ -1,6 +1,7 @@
 import numpy as np
 from random import shuffle
 
+# Please ignore this file
 def svm_loss_naive(W, X, y, reg):
   """
   Structured SVM loss function, naive implementation (with loops).

@@ -60,3 +60,8 @@ jupyter notebook --port=5000
 Once you are done working run the collectSubmission.sh script; this will produce a file called `assignment1.zip`. Rename it to `StudentID-StudentName-AssignmentID.zip`(for example, `12345-小明-as1.zip`). 
 
 Upload your assignments to corresponding folder in `ftp://202.120.38.125:8890`. Public account: `dl2017`/`dl2017`.
+```bash
+ftp 202.120.38.125 8890
+cd assignment1
+put 12345-小明-as1.zip
+```

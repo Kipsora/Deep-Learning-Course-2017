@@ -61,5 +61,5 @@ Once you are done working run the collectSubmission.sh script; this will produce
 
 Upload your assignments to corresponding folder in `http://202.120.38.125:9999`. Public account: `test`/`test`.
 ```bash
-Please refer to "上传说明.txt" in the website.
+Please refer to "上传说明.txt" on the website.
 ```

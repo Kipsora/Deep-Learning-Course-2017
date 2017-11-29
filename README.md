@@ -32,6 +32,17 @@ pip install -r requirements.txt  # Install dependencies
 # Work on the assignment for a while ...
 deactivate                       # Exit the virtual environment
 ```
+if you meet the same situation in [issue#4](https://github.com/caodi0207/Deep-Learning-Course-2017/issues/4), you could try the following scripts before installing the requirements. (Thanks for [Kipsora](https://github.com/Kipsora)'s contribution)
+
+```bash
+sudo apt install pkg-config
+sudo apt install libncurses5-dev
+sudo apt install libjpeg-dev
+sudo apt install libfreetype6-dev
+sudo apt install blt-dev
+```
+
+
 
 ### Step 2
 **[Download data]:** Once you have the starter code, you will need to download the CIFAR-10 dataset. Run the following from the `assignment1` directory:

@@ -2,7 +2,7 @@
 DeepLearning Course Assignments
 
 # Deadlines
-**Assignment1: `12/07 23:59`**
+**Assignment1: `12/07 23:59`**(Please update collectSubmission.sh to avoid including the virtual env.)
 
 # Introduction
 

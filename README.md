@@ -2,7 +2,11 @@
 DeepLearning Course Assignments
 
 # Deadlines
-**Assignment1: `12/07 23:59`**(Please update collectSubmission.sh to avoid including the virtual env.)
+Assignment1: `12/07 23:59`(Please update collectSubmission.sh to avoid including the virtual env.)
+
+**Assignment2: ` `**
+
+FullyConnectedNets.ipynb => BatchNormalization.ipynb => Dropout.ipynb => ConvolutionalNetworks.ipynb
 
 # Introduction
 

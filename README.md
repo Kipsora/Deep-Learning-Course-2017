@@ -15,13 +15,20 @@ A PDF is uploaded to the GitHub describing the task. The data and the script are
 Currently, only the small training dataset is published and the much bigger one is still being converted to the pickle format. 
 
 Submission:
+
 The source codes of your project
+
 The output file on the evaluation set (refers to toy_read.py)
+
 A PDF report in English(including task definition, detailed approach, analysis and so on)
 
+
 Score structure:
+
 The quality of your report(50%)
+
 Results on the evaluation set(20%) + the rank in the class(10%)
+
 Using several DL frameworks(TensorFlow, Pytorch, MXNet, Caffe and so on)(including comparison of speed, performance in the report) (20% for 2 and a bouns 5% if you use 3 frameworks)
 
 # Introduction

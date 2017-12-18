@@ -10,7 +10,7 @@ FullyConnectedNets.ipynb => BatchNormalization.ipynb => Dropout.ipynb => Convolu
 
 # Final Project:
 
-A PDF is uploaded to the GitHub describing the task. The data and the script are on the FTP server and you can download the .zip file.
+A PDF is uploaded to the GitHub describing the task. The data and the script are on the FTP server and you can download the .zip file. (toy_read_py3.py is provided by 陈欣昊.)
 
 Currently, only the small training dataset is published and the much bigger one is still being converted to the pickle format. 
 

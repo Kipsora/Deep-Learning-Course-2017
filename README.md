@@ -19,6 +19,10 @@
 
 9.杨嘉成
 
+### Deadline
+Please send the paper to TA's mail `caodi0207@sjtu.edu.cn` before 12/27 24:00.
+
+Please send the PPT to TA's mail `caodi0207@sjtu.edu.cn` before 12/29 12:00.
 
 # DLCourse_AS
 DeepLearning Course Assignments

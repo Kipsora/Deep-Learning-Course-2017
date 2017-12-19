@@ -1,3 +1,25 @@
+## Presentation 2
+### List
+
+1.盛佩瑶
+
+2.黎金宁
+
+3.刘思柒
+
+4.胥拿云
+
+5.杨卓林
+
+6.卢思迪
+
+7.方博慧
+
+8.陈欣昊
+
+9.杨嘉成
+
+
 # DLCourse_AS
 DeepLearning Course Assignments
 

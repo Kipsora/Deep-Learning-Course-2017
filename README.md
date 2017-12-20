@@ -1,3 +1,29 @@
+## Presentation 2
+### List
+
+1.盛佩瑶
+
+2.黎金宁
+
+3.刘思柒
+
+4.胥拿云
+
+5.杨卓林
+
+6.卢思迪
+
+7.方博慧
+
+8.陈欣昊
+
+9.杨嘉成
+
+### Deadline
+Please send the paper to TA's mail `caodi0207@sjtu.edu.cn` before 12/27 24:00.
+
+Please send the PPT to TA's mail `caodi0207@sjtu.edu.cn` before 12/29 12:00.
+
 # DLCourse_AS
 DeepLearning Course Assignments
 

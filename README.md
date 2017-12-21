@@ -40,7 +40,7 @@ A PDF is uploaded to the GitHub describing the task. The data and the script are
 
 Currently, only the small training dataset is published and the much bigger one is still being converted to the pickle format. 
 
-**The final scores will be given according to the performances on the evaluation set (refers to the folder ./eval). However, the evaluation set shouldn't be used before the completion of the training. That is to say, it is cheating if you use the evaluation set to train your model or choose the optimal model according to the performances on the evaluation set. We will give serious punishment if such behaviors are found.**
+**Final scores will be given according to the performances on the evaluation set (refers to the folder ./eval). However, the evaluation set shouldn't be used before the completion of training. That is to say, it is cheating if you use the evaluation set to train your model or choose the optimal model according to the performances on the evaluation set. We will give serious punishment if such behaviors are found.**
 
 ## Submission: (before 01/10)
 

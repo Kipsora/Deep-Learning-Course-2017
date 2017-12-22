@@ -38,7 +38,7 @@ FullyConnectedNets.ipynb => BatchNormalization.ipynb => Dropout.ipynb => Convolu
 
 A PDF is uploaded to the GitHub describing the task. The data and the script are on the FTP server and you can download the .zip file. (toy_read_py3.py is provided by 陈欣昊.)
 
-Currently, only the small training dataset is published and the much bigger one is still being converted to the pickle format. 
+The results based on the small training set must be provided, whereas results obtained based on the big training set are optional.
 
 **Final scores will be given according to the performances on the evaluation set (refers to the folder ./eval). However, the evaluation set shouldn't be used before the completion of training. That is to say, it is cheating if you use the evaluation set to train your model or choose the optimal model according to the performances on the evaluation set. We will give serious punishment if such behaviors are found.**
 

@@ -181,6 +181,9 @@ class FullyConnectedNet(object):
         sW, sb = 'W{}'.format(index), 'b{}'.format(index)
         self.params.setdefault(sW, np.random.randn(last_dim, dim) * weight_scale)
         self.params.setdefault(sb, np.zeros(dim))
+        if self.use_batchnorm:
+            self.params.setdefault('gamma{}'.format(index), np.ones(dim))
+            self.params.setdefault('beta{}'.format(index), np.zeros(dim))
         last_dim = dim
     self.params.setdefault('Wf'.format(len(hidden_dims)), 
                            np.random.randn(last_dim, num_classes) * weight_scale)
@@ -247,10 +250,22 @@ class FullyConnectedNet(object):
     scores = X
     caches = []
     for index in range(self.num_layers - 1):
-        sW, sb = 'W{}'.format(index), 'b{}'.format(index)
-        scores, cache1 = affine_forward(scores, self.params[sW], self.params[sb])
-        scores, cache2 = relu_forward(scores)
-        caches.append((cache1, cache2))
+        sW = self.params['W{}'.format(index)]
+        sb = self.params['b{}'.format(index)]
+        caches.append([])
+        scores, cache = affine_forward(scores, sW, sb)
+        caches[-1].append(cache)
+        if self.use_batchnorm:
+            sgamma = self.params['gamma{}'.format(index)]
+            sbeta = self.params['beta{}'.format(index)]
+            scores, cache = batchnorm_forward(scores, sgamma, sbeta, 
+                                              self.bn_params[index])
+            caches[-1].append(cache)
+        scores, cache = relu_forward(scores)
+        caches[-1].append(cache)
+        if self.use_dropout:
+            scores, cache = dropout_forward(scores, self.dropout_param)
+            caches[-1].append(cache)
     scores, cache = affine_forward(
         scores, self.params['Wf'], self.params['bf'])
     ############################################################################
@@ -282,12 +297,28 @@ class FullyConnectedNet(object):
     grads.setdefault('bf', db)
     loss += 0.5 * self.reg * np.sum(np.square(self.params['Wf']))
     for index, cache in reversed(list(enumerate(caches))):
-        sW, sb = 'W{}'.format(index), 'b{}'.format(index)
-        loss += 0.5 * self.reg * np.sum(np.square(self.params[sW]))
+        if self.use_dropout:
+            grad = dropout_backward(grad, cache[-1])
+            cache = cache[:-1]
+        
         grad = relu_backward(grad, cache[-1])
-        grad, dW, db = affine_backward(grad, cache[-2])
+        cache = cache[:-1]
+        
+        if self.use_batchnorm:
+            sgamma = 'gamma{}'.format(index)
+            sbeta = 'beta{}'.format(index)
+            grad, dgamma, dbeta = batchnorm_backward_alt(grad, cache[-1])
+            cache = cache[:-1]
+            grads.setdefault(sgamma, dgamma)
+            grads.setdefault(sbeta, dbeta)
+        
+        sW, sb = 'W{}'.format(index), 'b{}'.format(index)
+        grad, dW, db = affine_backward(grad, cache[-1])
         grads.setdefault(sW, dW + self.reg * self.params[sW])
         grads.setdefault(sb, db)
+        cache = cache[:-1]
+        
+        loss += 0.5 * self.reg * np.sum(np.square(self.params[sW]))
     ############################################################################
     #                             END OF YOUR CODE                             #
     ############################################################################

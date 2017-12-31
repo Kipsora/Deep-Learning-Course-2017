@@ -47,10 +47,6 @@ class PickleDataset(Dataset):
         with open(path, 'rb') as reader:
             self._X_train, self._y_train, self._X_eval, self._y_eval = pickle.load(
                 reader)
-        self._wash()
-
-    def _wash(self):
-        pass
 
     @property
     def train(self):
@@ -71,7 +67,3 @@ class PickleDataset(Dataset):
     @property
     def ishape(self):
         return self._X_train.shape[1:]
-
-
-class Audio(PickleDataset):
-    pass

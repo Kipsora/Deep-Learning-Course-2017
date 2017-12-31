@@ -39,7 +39,6 @@ class DeepNN(TFModel):
         total = functools.reduce(operator.mul, ishape, 1)
         hidden = tf.reshape(self._input, shape=[-1, total])
 
-        print(self._hparam.layers)
         for i, layer in enumerate(self._hparam.layers):
             with tf.variable_scope('layer_' + str(i)):
                 if layer.args:

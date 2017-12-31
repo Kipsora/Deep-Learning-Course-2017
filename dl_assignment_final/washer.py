@@ -9,7 +9,7 @@ def read_dir(filedir='./eval'):
     for subfile in os.listdir(filedir):
         with gzip.open(os.path.join(filedir, subfile), 'rb') as readsub:
             curfile = pickle.load(readsub)
-            data_dict = dict(data_dict.items() + curfile.items())
+            data_dict = data_dict.update(curfile)
     return data_dict
 
 

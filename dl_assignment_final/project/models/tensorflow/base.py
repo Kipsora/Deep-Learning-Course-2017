@@ -17,7 +17,7 @@ class TFModel(Model):
         config = tf.ConfigProto(allow_soft_placement=True,
                                 log_device_placement=False)
         config.gpu_options.allow_growth = True
-        self._session = tf.Session(config)
+        self._session = tf.Session(config=config)
         self._session.run(tf.global_variables_initializer())
         self._session.run(tf.local_variables_initializer())
 
@@ -41,9 +41,13 @@ class TFModel(Model):
     def get_loss(name, answer, output):
         if name == 'mean_squared_error':
             return tf.reduce_sum(tf.square(answer - output), axis=-1)
-        elif name == 'cross_entropy':
-            return tf.nn.softmax_cross_entropy_with_logits(
-                labels=answer, logits=output)
+        elif name == 'multilabel_softmax_cross_entropy':
+            output = tf.expand_dims(output, axis=-1)
+            output = tf.concat([output, 1 - output], axis=2)
+            answer = tf.expand_dims(answer, axis=-1)
+            answer = tf.concat([answer, 1 - answer], axis=2)
+            return tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(
+                labels=answer, logits=output), axis=1)
         else:
             raise NotImplementedError('Loss \'{}\' is not implemented'
                                       .format(name))

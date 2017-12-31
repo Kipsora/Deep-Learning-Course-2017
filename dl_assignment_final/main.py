@@ -4,13 +4,14 @@ import argparse
 
 import progressbar
 
-from project.utils import plot, save, load, metrics
 from project.datasets import PickleDataset
 from project.hparam import get_hparam
 from project.models.tensorflow import DeepNN
+from project.utils import metrics, set_seed
 
 
 def main(config):
+    set_seed(config.seed)
     dataset = PickleDataset('dataset/washed/audioset.data')
     hparam = DeepNN.default_hparam()
     hparam.layers = [
@@ -49,8 +50,8 @@ def main(config):
     hparam.optimizer.params.learning_rate = 0.001
     for k, v in hparam.iterall('hparam.'):
         print(k, '=', v)
-    model = DeepNN('test', dataset.ishape, dataset.osize, hparam)
 
+    model = DeepNN('test', dataset.ishape, dataset.osize, hparam)
     if config.load:
         model.load(config.load)
     else:

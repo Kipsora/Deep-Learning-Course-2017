@@ -2,7 +2,7 @@ import abc
 import json
 import os
 
-from project.hparam import get_hparam
+from project.hparam import get_hparam, HParam
 
 
 class Model(object):
@@ -13,6 +13,7 @@ class Model(object):
         if not hparam:
             self._hparam = self.default_hparam()
         else:
+            assert isinstance(hparam, HParam)
             self._hparam = hparam
         self._path = os.path.realpath(path + '/' + self._name)
         if not os.path.exists(self._path):

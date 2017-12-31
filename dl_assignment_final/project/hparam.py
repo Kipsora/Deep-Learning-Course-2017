@@ -16,10 +16,10 @@ class HParamList(list):
     def iterall(self, prefix=None):
         for i, e in enumerate(self):
             if hasattr(e, 'iterall'):
-                for k, v in e.iterall('.'):
-                    yield '[{}]'.format(i) + k, v
+                for k, v in e.iterall(prefix + '[{}]'.format(i)):
+                    yield k, v
             else:
-                yield '[{}]'.format(i), e
+                yield prefix + '[{}]'.format(i), e
 
 
 class HParam(dict):
@@ -43,10 +43,12 @@ class HParam(dict):
         self[key] = get_incomplete_hparam(value)
 
     def iterall(self, prefix=''):
+        if prefix:
+            prefix += '.'
         for k, v in six.iteritems(self):
             if hasattr(v, 'iterall'):
-                for k_, v_ in v.iterall('.'):
-                    yield prefix + k + k_, v_
+                for k_, v_ in v.iterall(prefix + k):
+                    yield k_, v_
             else:
                 yield prefix + k, v
 

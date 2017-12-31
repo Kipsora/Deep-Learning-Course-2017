@@ -1,6 +1,13 @@
 import os
 import pickle
+import tensorflow
+import numpy
 from sklearn.metrics import roc_auc_score, average_precision_score
+
+
+def set_seed(seed=None):
+    tensorflow.set_random_seed(seed)
+    numpy.random.seed(seed)
 
 
 def plot(data, log=None, fig=None, figsize=(8, 6),

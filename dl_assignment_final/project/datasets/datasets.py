@@ -43,7 +43,6 @@ class Gabor(UniformFunctionDataset):
 class PickleDataset(Dataset):
     def __init__(self, path):
         super(PickleDataset, self).__init__()
-
         with open(path, 'rb') as reader:
             self._X_train, self._y_train, self._X_eval, self._y_eval = pickle.load(
                 reader)

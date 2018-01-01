@@ -101,4 +101,3 @@ class DeepNN(TFModel):
         )
         result.update(TFModel.__bases__[0].default_hparam())
         return result
-

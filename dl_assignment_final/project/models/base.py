@@ -25,7 +25,7 @@ class Model(object):
 
     @staticmethod
     def default_hparam():
-        return get_hparam(seed=0)
+        return get_hparam()
 
     @abc.abstractmethod
     def save(self, epoch):

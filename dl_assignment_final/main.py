@@ -36,6 +36,11 @@ def main(config):
             batchnorm=get_hparam()
         ),
         get_hparam(
+            units=100,
+            activation='leaky_relu',
+            batchnorm=get_hparam()
+        ),
+        get_hparam(
             units=40,
             activation='leaky_relu',
             batchnorm=get_hparam()
@@ -47,8 +52,8 @@ def main(config):
     ))
     hparam.loss = 'multilabel_softmax_cross_entropy'
     hparam.optimizer.type = 'Adam'
-    hparam.optimizer.params.learning_rate = 0.001
-    for k, v in hparam.iterall('hparam.'):
+    hparam.optimizer.params.learning_rate = 0.002
+    for k, v in hparam.iterall('hparam'):
         print(k, '=', v)
 
     model = DeepNN('test', dataset.ishape, dataset.osize, hparam)

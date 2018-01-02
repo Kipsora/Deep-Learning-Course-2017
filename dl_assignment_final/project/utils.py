@@ -8,11 +8,14 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 
 
 def set_seed(seed=None):
+    if seed is None:
+        seed = numpy.random.randint(0, 65536)
     tensorflow.set_random_seed(seed)
     numpy.random.seed(seed)
     if seed:
         mxnet.random.seed(seed)
         torch.manual_seed(seed)
+    return seed
 
 
 def plot(data, log=None, fig=None, figsize=(8, 6),

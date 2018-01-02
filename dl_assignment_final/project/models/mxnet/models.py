@@ -17,6 +17,8 @@ class DeepNN(MXModel):
     def _declare(self):
         self._layers = []
         for layer in self._hparam.layers:
+            if layer.batchnorm:
+                self._layers.append(mxnet.gluon.nn.BatchNorm(**layer.batchnorm))
             self._layers.append(mxnet.gluon.nn.Dense(
                 units=layer.units,
                 activation=layer.activation
@@ -29,15 +31,19 @@ class DeepNN(MXModel):
             layers=[
                 get_hparam(
                     units=20,
-                    activation='leaky_relu',
+                    activation='relu',
                     batchnorm=get_hparam()
                 ),
                 get_hparam(
                     units=20,
-                    activation='leaky_relu',
+                    activation='relu',
                     batchnorm=get_hparam()
                 )
             ],
+            reg=get_hparam(
+                type='L2',
+                value=0.001
+            ),
             loss='mean_squared_error',
             optimizer=get_hparam(
                 type='RMSProp',

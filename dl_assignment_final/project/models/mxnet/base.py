@@ -12,12 +12,16 @@ class _Loss(mxnet.gluon.loss.Loss):
         super(_Loss, self).__init__(weight, batch_axis)
         self._name = name
 
-    def hybrid_forward(self, F, answer, output):
+    def hybrid_forward(self, F, output, answer):
         if self._name == 'mean_squared_error':
+            if answer is None:
+                return output
             return F.mean(F.sum(F.square(answer - output), axis=1),
                           axis=self._batch_axis)
         elif self._name == 'multilabel_sigmoid_cross_entropy':
             output = F.sigmoid(output)
+            if answer is None:
+                return output
             return -F.mean(F.sum(
                 answer * F.log(output + 1e-12) +
                 (1 - answer) * F.log(1 - output + 1e-12), axis=1),
@@ -25,7 +29,6 @@ class _Loss(mxnet.gluon.loss.Loss):
         else:
             raise NotImplementedError('Loss \'{}\' is not implemented'
                                       .format(self._name))
-
 
 class MXModel(Model):
     __metaclass__ = abc.ABCMeta
@@ -70,19 +73,18 @@ class MXModel(Model):
             X = mxnet.nd.array(X, ctx=self._context)
             y = mxnet.nd.array(y, ctx=self._context)
             output = self._net(X)
-            loss = self._loss(y, output)
+            loss = self._loss(output, y)
         loss.backward()
         self._trainer.step(X.shape[0])
 
     def loss(self, X, y):
         X = mxnet.nd.array(X, ctx=self._context)
         y = mxnet.nd.array(y, ctx=self._context)
-        output = self._net(X)
-        return self._loss(y, output).asscalar()
+        return self._loss(self._net(X), y).asscalar()
 
     def predict(self, X):
         X = mxnet.nd.array(X, ctx=self._context)
-        return self._net(X).asnumpy()
+        return self._loss(self._net(X), None).asnumpy()
 
     @staticmethod
     def default_hparam():

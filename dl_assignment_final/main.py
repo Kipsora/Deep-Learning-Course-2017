@@ -6,26 +6,50 @@ import progressbar
 
 from project.datasets import JoblibDataset
 from project.hparam import get_hparam
-from project.models.tensorflow import DeepNN
 from project.utils import metrics, set_seed
 
 
 def main(config):
-    set_seed(config.seed)
+    print('random seed', '=', set_seed(config.seed))
+    if config.platform == 'tensorflow':
+        from project.models.tensorflow import DeepNN
+    elif config.platform == 'mxnet':
+        from project.models.mxnet import DeepNN
+    else:
+        raise NotImplementedError("Model on platform \'{}\' is not implemented"
+                                  .format(config.platform))
     dataset = JoblibDataset('dataset/washed/audioset.data')
     hparam = DeepNN.default_hparam()
     hparam.layers = [
         get_hparam(
             units=40,
-            activation='leaky_relu'
+            activation='relu',
+            batchnorm=get_hparam()
         ),
         get_hparam(
             units=100,
-            activation='leaky_relu'
+            activation='relu',
+            batchnorm=get_hparam()
+        ),
+        get_hparam(
+            units=100,
+            activation='relu',
+            batchnorm=get_hparam()
+        ),
+        get_hparam(
+            units=100,
+            activation='relu',
+            batchnorm=get_hparam()
+        ),
+        get_hparam(
+            units=100,
+            activation='relu',
+            batchnorm=get_hparam()
         ),
         get_hparam(
             units=40,
-            activation='leaky_relu'
+            activation='relu',
+            batchnorm=get_hparam()
         )
     ]
     hparam.layers.append(get_hparam(
@@ -33,7 +57,7 @@ def main(config):
     ))
     hparam.loss = 'multilabel_sigmoid_cross_entropy'
     hparam.optimizer.type = 'Adam'
-    hparam.optimizer.params.learning_rate = 0.001
+    hparam.optimizer.params.learning_rate = 0.002
     for k, v in hparam.iterall('hparam'):
         print(k, '=', v)
 
@@ -72,8 +96,9 @@ def main(config):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--load', type=int, default=None)
-    parser.add_argument('--epoch', type=int, default=10000)
+    parser.add_argument('--epoch', type=int, default=20000)
     parser.add_argument('--seed', type=int, default=None)
-    parser.add_argument('--batch-size', type=int, default=64)
+    parser.add_argument('--batch-size', type=int, default=128)
     parser.add_argument('--print-period', type=int, default=500)
+    parser.add_argument('--platform', type=str, default='tensorflow')
     main(parser.parse_args())

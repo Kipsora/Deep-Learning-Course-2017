@@ -1,3 +1,4 @@
+from __future__ import print_function
 import functools
 import operator
 
@@ -26,7 +27,7 @@ class DeepNN(TFModel):
         })
 
     def predict(self, X):
-        return self._session.run(self._scores, feed_dict={
+        return self._session.run(self._output, feed_dict={
             self._training: False,
             self._input: X
         })
@@ -39,36 +40,55 @@ class DeepNN(TFModel):
 
             total = functools.reduce(operator.mul, ishape, 1)
             hidden = tf.reshape(self._input, shape=[-1, total])
-            for i, layer in enumerate(self._hparam.layers):
+            minor_loss = 0
+            for i, config in enumerate(self._hparam.layers):
                 with tf.variable_scope('layer_' + str(i)):
-                    if layer.batchnorm:
-                        hidden = tf.layers.batch_normalization(
-                            inputs=hidden,
+                    if config.batchnorm:
+                        layer = tf.layers.BatchNormalization(
                             training=self._training,
-                            **layer.batchnorm
+                            **config.batchnorm
                         )
-                    if layer.args:
-                        hidden = tf.layers.dense(
-                            inputs=hidden,
-                            units=layer.units,
-                            activation=self.get_activation(layer.activation),
-                            **layer.args
+                        if self._hparam.reg:
+                            if self._hparam.reg.type == 'L2':
+                                minor_loss += tf.reduce_mean(
+                                    tf.square(layer.weights))
+                            else:
+                                raise NotImplementedError(
+                                    '\'{}\' Regularization is not implemented')
+                        hidden = layer(hidden)
+                    if config.args:
+                        layer = tf.layers.Dense(
+                            units=config.units,
+                            activation=self.get_activation(config.activation),
+                            **config.args
                         )
                     else:
-                        hidden = tf.layers.dense(
-                            inputs=hidden,
-                            units=layer.units,
-                            activation=self.get_activation(layer.activation)
+                        layer = tf.layers.Dense(
+                            units=config.units,
+                            activation=self.get_activation(config.activation)
                         )
-                    if layer.dropout:
+                    hidden = layer(hidden)
+                    if self._hparam.reg:
+                        if self._hparam.reg.type == 'L2':
+                            minor_loss += tf.reduce_mean(
+                                    tf.square(layer.kernel))
+                        else:
+                            raise NotImplementedError('\'{}\' Regularization is'
+                                                      ' not implemented')
+                    if config.dropout:
                         hidden = tf.layers.dropout(
                             inputs=hidden,
                             training=self._training,
-                            **layer.dropout
+                            **config.dropout
                         )
             self._scores = hidden
-            self._output, self._loss = self.get_loss(self._hparam.loss,
+            self._output, major_loss = self.get_loss(self._hparam.loss,
                                                      self._answer, self._scores)
+
+            if self._hparam.reg:
+                self._loss = major_loss + minor_loss * self._hparam.reg.value
+            else:
+                self._loss = major_loss
 
         self._train_op = self.get_optimizer(
             self._hparam.optimizer).minimize(self._loss)
@@ -88,6 +108,10 @@ class DeepNN(TFModel):
                     batchnorm=get_hparam()
                 )
             ],
+            reg=get_hparam(
+                type='L2',
+                value=0.001
+            ),
             loss='mean_squared_error',
             optimizer=get_hparam(
                 type='RMSProp',

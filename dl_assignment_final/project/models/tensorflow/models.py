@@ -37,17 +37,17 @@ class DeepNN(TFModel):
             self._training = tf.placeholder(tf.bool)
             self._input = tf.placeholder(tf.float32, shape=[None] + list(ishape))
             self._answer = tf.placeholder(tf.float32, shape=[None, osize])
+            batch_size = tf.shape(self._input)[0]
 
-            total = functools.reduce(operator.mul, ishape, 1)
-            hidden = tf.reshape(self._input, shape=[-1, total])
+            hidden = self._input
             minor_loss = 0
             for i, config in enumerate(self._hparam.layers):
                 with tf.variable_scope('layer_' + str(i)):
                     if config.batchnorm:
                         layer = tf.layers.BatchNormalization(
-                            training=self._training,
                             **config.batchnorm
                         )
+                        hidden = layer(hidden, training=self._training)
                         if self._hparam.reg:
                             if self._hparam.reg.type == 'L2':
                                 minor_loss += tf.reduce_mean(
@@ -55,26 +55,72 @@ class DeepNN(TFModel):
                             else:
                                 raise NotImplementedError(
                                     '\'{}\' Regularization is not implemented')
-                        hidden = layer(hidden)
-                    if config.args:
-                        layer = tf.layers.Dense(
-                            units=config.units,
-                            activation=self.get_activation(config.activation),
-                            **config.args
-                        )
-                    else:
-                        layer = tf.layers.Dense(
-                            units=config.units,
-                            activation=self.get_activation(config.activation)
-                        )
-                    hidden = layer(hidden)
-                    if self._hparam.reg:
-                        if self._hparam.reg.type == 'L2':
-                            minor_loss += tf.reduce_mean(
-                                    tf.square(layer.kernel))
+                    if config.type == 'dense':
+                        units = functools.reduce(
+                            operator.mul, map(int, hidden.shape[1:]), 1)
+                        hidden = tf.reshape(hidden, shape=[batch_size, units])
+                        if config.args:
+                            layer = tf.layers.Dense(
+                                units=config.units,
+                                activation=self.get_activation(
+                                    config.activation),
+                                **config.args
+                            )
                         else:
-                            raise NotImplementedError('\'{}\' Regularization is'
-                                                      ' not implemented')
+                            layer = tf.layers.Dense(
+                                units=config.units,
+                                activation=self.get_activation(
+                                    config.activation)
+                            )
+                        hidden = layer(hidden)
+                        if self._hparam.reg:
+                            if self._hparam.reg.type == 'L2':
+                                minor_loss += tf.reduce_mean(
+                                    tf.square(layer.kernel))
+                            else:
+                                raise NotImplementedError(
+                                    '\'{}\' Regularization is'
+                                    ' not implemented')
+                    elif config.type == 'conv1d':
+                        if config.args:
+                            layer = tf.layers.Conv1D(
+                                filters=config.filters,
+                                kernel_size=config.kernel_size,
+                                activation=self.get_activation(
+                                    config.activation),
+                                **config.args
+                            )
+                        else:
+                            layer = tf.layers.Conv1D(
+                                filters=config.filters,
+                                kernel_size=config.kernel_size,
+                                activation=self.get_activation(
+                                    config.activation)
+                            )
+                        hidden = layer(hidden)
+                        if self._hparam.reg:
+                            if self._hparam.reg.type == 'L2':
+                                minor_loss += tf.reduce_mean(
+                                        tf.square(layer.kernel))
+                            else:
+                                raise NotImplementedError('\'{}\' Regularization is'
+                                                          ' not implemented')
+                    elif config.type == 'maxpool1d':
+                        if config.args:
+                            layer = tf.layers.MaxPooling1D(
+                                pool_size=config.pool_size,
+                                strides=config.strides,
+                                **config.args
+                            )
+                        else:
+                            layer = tf.layers.MaxPooling1D(
+                                pool_size=config.pool_size,
+                                strides=config.strides
+                            )
+                        hidden = layer(hidden)
+                    else:
+                        raise NotImplementedError('\'{}\' layer is not implemen'
+                                                  'ted'.format(config.type))
                     if config.dropout:
                         hidden = tf.layers.dropout(
                             inputs=hidden,

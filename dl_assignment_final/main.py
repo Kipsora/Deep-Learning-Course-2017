@@ -22,37 +22,37 @@ def main(config):
     hparam = DeepNN.default_hparam()
     hparam.layers = [
         get_hparam(
+            type='conv1d',
+            filters=10,
+            kernel_size=(4,),
+            activation=None
+        ),
+        get_hparam(
+            type='conv1d',
+            filters=10,
+            kernel_size=(2,),
+            activation=None
+        ),
+        get_hparam(
+            type='maxpool1d',
+            pool_size=(3,),
+            strides=2
+        ),
+        get_hparam(
+            type='dense',
+            units=100,
+            activation='leaky_relu',
+            batchnorm=get_hparam()
+        ),
+        get_hparam(
+            type='dense',
             units=40,
-            activation='relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=40,
-            activation='relu',
+            activation='leaky_relu',
             batchnorm=get_hparam()
         )
     ]
     hparam.layers.append(get_hparam(
+        type='dense',
         units=dataset.osize
     ))
     hparam.loss = 'multilabel_sigmoid_cross_entropy'

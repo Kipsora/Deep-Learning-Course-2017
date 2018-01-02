@@ -6,7 +6,7 @@ import progressbar
 
 from project.datasets import PickleDataset
 from project.hparam import get_hparam
-from project.models.tensorflow import DeepNN
+from project.models.mxnet import DeepNN
 from project.utils import metrics, set_seed
 
 
@@ -17,42 +17,23 @@ def main(config):
     hparam.layers = [
         get_hparam(
             units=40,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
+            activation='relu'
         ),
         get_hparam(
             units=100,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
-        ),
-        get_hparam(
-            units=100,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
+            activation='relu'
         ),
         get_hparam(
             units=40,
-            activation='leaky_relu',
-            batchnorm=get_hparam()
+            activation='relu'
         )
     ]
     hparam.layers.append(get_hparam(
-        units=dataset.osize,
-        batchnorm=get_hparam()
+        units=dataset.osize
     ))
-    hparam.loss = 'multilabel_softmax_cross_entropy'
+    hparam.loss = 'multilabel_sigmoid_cross_entropy'
     hparam.optimizer.type = 'Adam'
-    hparam.optimizer.params.learning_rate = 0.002
+    hparam.optimizer.params.learning_rate = 0.001
     for k, v in hparam.iterall('hparam'):
         print(k, '=', v)
 
@@ -78,8 +59,8 @@ def main(config):
             auc, ap = metrics(y_eval, predicts)
             pbar.widgets[-1] = 'Train: %.8f Eval: (Loss: %.8f, AUC' \
                                ': %.8f, AP: %.8f)' % (
-                model.loss(X_eval, y_eval),
                 model.loss(*dataset.batch(config.batch_size)),
+                model.loss(X_eval, y_eval),
                 auc, ap
             )
             pbar.update(epoch - config.load)
@@ -94,5 +75,5 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=10000)
     parser.add_argument('--seed', type=int, default=None)
     parser.add_argument('--batch-size', type=int, default=64)
-    parser.add_argument('--print-period', type=int, default=400)
+    parser.add_argument('--print-period', type=int, default=100)
     main(parser.parse_args())

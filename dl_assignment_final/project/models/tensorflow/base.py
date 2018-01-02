@@ -38,16 +38,15 @@ class TFModel(Model):
                                       .format(name))
 
     @staticmethod
-    def get_loss(name, answer, output):
+    def get_loss(name, answer, score):
         if name == 'mean_squared_error':
-            return tf.reduce_sum(tf.square(answer - output), axis=-1)
-        elif name == 'multilabel_softmax_cross_entropy':
-            output = tf.expand_dims(output, axis=-1)
-            output = tf.concat([output, 1 - output], axis=2)
-            answer = tf.expand_dims(answer, axis=-1)
-            answer = tf.concat([answer, 1 - answer], axis=2)
-            return tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(
-                labels=answer, logits=output), axis=1)
+            return score, tf.reduce_mean(tf.reduce_sum(
+                tf.square(answer - score), axis=-1))
+        elif name == 'multilabel_sigmoid_cross_entropy':
+            return tf.sigmoid(score), tf.reduce_mean(tf.reduce_sum(
+                tf.nn.sigmoid_cross_entropy_with_logits(
+                    labels=answer, logits=score
+                ), axis=1))
         else:
             raise NotImplementedError('Loss \'{}\' is not implemented'
                                       .format(name))

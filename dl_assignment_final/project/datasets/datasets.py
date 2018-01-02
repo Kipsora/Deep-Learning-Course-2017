@@ -1,5 +1,7 @@
-import numpy
 import pickle
+
+import numpy
+from sklearn.externals import joblib
 
 from project.datasets.base import UniformFunctionDataset, Dataset
 
@@ -44,8 +46,36 @@ class PickleDataset(Dataset):
     def __init__(self, path):
         super(PickleDataset, self).__init__()
         with open(path, 'rb') as reader:
-            self._X_train, self._y_train, self._X_eval, self._y_eval = pickle.load(
-                reader)
+            self._X_train, self._y_train, self._X_eval, self._y_eval = \
+                pickle.load(reader)
+
+    @property
+    def train(self):
+        return self._X_train, self._y_train
+
+    @property
+    def eval(self):
+        return self._X_eval, self._y_eval
+
+    def batch(self, size=128):
+        indexes = numpy.random.choice(len(self._X_train), size)
+        return self._X_train[indexes], self._y_train[indexes]
+
+    @property
+    def osize(self):
+        return self._y_train.shape[1:][0]
+
+    @property
+    def ishape(self):
+        return self._X_train.shape[1:]
+
+
+class JoblibDataset(Dataset):
+    def __init__(self, path):
+        super(JoblibDataset, self).__init__()
+        with open(path, 'rb') as reader:
+            self._X_train, self._y_train, self._X_eval, self._y_eval = \
+                joblib.load(reader)
 
     @property
     def train(self):

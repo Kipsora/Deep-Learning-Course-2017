@@ -13,6 +13,9 @@ class HParamList(list):
             result += str(e)
         return self.__class__.__name__ + '(' + result + ')'
 
+    def __repr__(self):
+        return self.__str__()
+
     def iterall(self, prefix=None):
         for i, e in enumerate(self):
             if hasattr(e, 'iterall'):
@@ -37,6 +40,9 @@ class HParam(dict):
             result += k + '=' + str(v)
         return self.__class__.__name__ + '(' + result + ')'
 
+    def __repr__(self):
+        return self.__str__()
+
     def __setattr__(self, key, value):
         if key not in self:
             raise AttributeError('Attribute \'{}\' is not found'.format(key))
@@ -51,6 +57,15 @@ class HParam(dict):
                     yield k_, v_
             else:
                 yield prefix + k, v
+
+    def translate(self, d):
+        result = dict()
+        for k, v in six.iteritems(self):
+            if k in d:
+                result.setdefault(d[k], v)
+            else:
+                result.setdefault(k, v)
+        return get_hparam(result)
 
 
 def get_incomplete_hparam(hparam):

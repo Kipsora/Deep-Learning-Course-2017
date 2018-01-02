@@ -1,18 +1,50 @@
+import mxnet
+
+from project.hparam import get_hparam
 from project.models.mxnet.base import MXModel
 
 
 class DeepNN(MXModel):
     def __init__(self, name, ishape, osize, hparam=None, path='./save'):
-        super(DeepNN, self).__init__(name, ishape, osize, hparam, path)
+        super(DeepNN, self).__init__(name, hparam, path)
 
-    def predict(self, X):
-        pass
+    def _build(self, F, input):
+        hidden = input
+        for layer in self._layers:
+            hidden = layer(hidden)
+        return hidden
 
-    def loss(self, X, y):
-        pass
+    def _declare(self):
+        self._layers = []
+        for layer in self._hparam.layers:
+            self._layers.append(mxnet.gluon.nn.Dense(
+                units=layer.units,
+                activation=layer.activation
+            ))
+        return self._layers
 
-    def train(self, X, y):
-        pass
-
-    def _build(self, net, ishape, osize):
-        pass
+    @staticmethod
+    def default_hparam():
+        result = get_hparam(
+            layers=[
+                get_hparam(
+                    units=20,
+                    activation='leaky_relu',
+                    batchnorm=get_hparam()
+                ),
+                get_hparam(
+                    units=20,
+                    activation='leaky_relu',
+                    batchnorm=get_hparam()
+                )
+            ],
+            loss='mean_squared_error',
+            optimizer=get_hparam(
+                type='RMSProp',
+                params=get_hparam(
+                    learning_rate=0.001
+                )
+            )
+        )
+        result.update(DeepNN.__bases__[0].default_hparam())
+        return result

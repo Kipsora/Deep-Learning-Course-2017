@@ -2,6 +2,7 @@ import gzip
 import numpy as np
 import pickle
 import os
+from sklearn.externals import joblib
 
 
 def read_dir(filedir='./eval'):
@@ -9,7 +10,7 @@ def read_dir(filedir='./eval'):
     for subfile in os.listdir(filedir):
         with gzip.open(os.path.join(filedir, subfile), 'rb') as readsub:
             curfile = pickle.load(readsub)
-            data_dict = data_dict.update(curfile)
+            data_dict.update(curfile)
     return data_dict
 
 
@@ -61,7 +62,7 @@ if __name__ == '__main__':
         print("y_eval.shape:", y_eval.shape)
 
         with open('dataset/washed/audioset.data', 'wb') as writer:
-            pickle.dump(
+            joblib.dump(
                 (X_train, y_train, X_eval, y_eval),
                 writer
             )

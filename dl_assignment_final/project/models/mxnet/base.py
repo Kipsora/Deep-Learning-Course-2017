@@ -13,14 +13,18 @@ class _Loss(mxnet.gluon.loss.Loss):
         self._name = name
 
     def hybrid_forward(self, F, answer, output):
-        if self._name == 'squared_mean_error':
-            return F.sum(F.square(answer - output), axis=1)
+        if self._name == 'mean_squared_error':
+            return F.mean(F.sum(F.square(answer - output), axis=1),
+                          axis=self._batch_axis)
         elif self._name == 'multilabel_sigmoid_cross_entropy':
             output = F.sigmoid(output)
             return -F.mean(F.sum(
                 answer * F.log(output + 1e-12) +
                 (1 - answer) * F.log(1 - output + 1e-12), axis=1),
                 axis=self._batch_axis)
+        else:
+            raise NotImplementedError('Loss \'{}\' is not implemented'
+                                      .format(self._name))
 
 
 class MXModel(Model):
@@ -29,13 +33,13 @@ class MXModel(Model):
     def __init__(self, name, hparam=None, path='./save'):
         super(MXModel, self).__init__(name, hparam, path)
         self._context = mxnet.cpu()
-        self._net = mxnet.gluon.nn.HybridLambda(self._build)
+        self._net = mxnet.gluon.nn.HybridLambda(self._forward)
         with self._net.name_scope():
             for block in self._declare():
                 self._net.register_child(block)
         self._net.hybridize()
         self._loss = _Loss(self._hparam.loss)
-        self._net.collect_params().initialize(mxnet.init.Normal(sigma=.01),
+        self._net.collect_params().initialize(mxnet.init.Normal(sigma=0.01),
                                               ctx=self._context)
         self._trainer = mxnet.gluon.Trainer(
             self._net.collect_params(),
@@ -54,7 +58,7 @@ class MXModel(Model):
                               ignore_extra=False)
 
     @abc.abstractmethod
-    def _build(self, F, input):
+    def _forward(self, F, input):
         pass
 
     @abc.abstractmethod

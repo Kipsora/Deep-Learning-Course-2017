@@ -8,7 +8,7 @@ class DeepNN(MXModel):
     def __init__(self, name, ishape, osize, hparam=None, path='./save'):
         super(DeepNN, self).__init__(name, hparam, path)
 
-    def _build(self, F, input):
+    def _forward(self, F, input):
         hidden = input
         for layer in self._layers:
             hidden = layer(hidden)

@@ -75,5 +75,5 @@ if __name__ == '__main__':
     parser.add_argument('--epoch', type=int, default=10000)
     parser.add_argument('--seed', type=int, default=None)
     parser.add_argument('--batch-size', type=int, default=64)
-    parser.add_argument('--print-period', type=int, default=100)
+    parser.add_argument('--print-period', type=int, default=500)
     main(parser.parse_args())

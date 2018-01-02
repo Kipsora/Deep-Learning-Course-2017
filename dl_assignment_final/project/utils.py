@@ -3,6 +3,7 @@ import pickle
 import tensorflow
 import numpy
 import mxnet
+import torch
 from sklearn.metrics import roc_auc_score, average_precision_score
 
 
@@ -11,6 +12,7 @@ def set_seed(seed=None):
     numpy.random.seed(seed)
     if seed:
         mxnet.random.seed(seed)
+        torch.manual_seed(seed)
 
 
 def plot(data, log=None, fig=None, figsize=(8, 6),

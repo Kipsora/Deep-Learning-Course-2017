@@ -4,28 +4,28 @@ import argparse
 
 import progressbar
 
-from project.datasets import PickleDataset
+from project.datasets import JoblibDataset
 from project.hparam import get_hparam
-from project.models.mxnet import DeepNN
+from project.models.tensorflow import DeepNN
 from project.utils import metrics, set_seed
 
 
 def main(config):
     set_seed(config.seed)
-    dataset = PickleDataset('dataset/washed/audioset.data')
+    dataset = JoblibDataset('dataset/washed/audioset.data')
     hparam = DeepNN.default_hparam()
     hparam.layers = [
         get_hparam(
             units=40,
-            activation='relu'
+            activation='leaky_relu'
         ),
         get_hparam(
             units=100,
-            activation='relu'
+            activation='leaky_relu'
         ),
         get_hparam(
             units=40,
-            activation='relu'
+            activation='leaky_relu'
         )
     ]
     hparam.layers.append(get_hparam(

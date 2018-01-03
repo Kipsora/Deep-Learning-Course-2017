@@ -109,6 +109,24 @@ def relu_backward(dout, cache):
   return dx
 
 
+def leaky_relu_forward(x, alpha=0.01):
+  out = None
+  #############################################################################
+  # TODO: Implement the ReLU forward pass.                                    #
+  #############################################################################
+  out = x * (x > 0) + (x <= 0) * alpha * x
+  #############################################################################
+  #                             END OF YOUR CODE                              #
+  #############################################################################
+  cache = x, alpha
+  return out, cache
+
+def leaky_relu_backward(dout, cache):
+  x, alpha = cache
+  dx = (x > 0) * dout + (x <= 0) * alpha * dout
+  return dx
+
+
 def batchnorm_forward(x, gamma, beta, bn_param):
   """
   Forward pass for batch normalization.
@@ -304,8 +322,8 @@ def dropout_forward(x, dropout_param):
     # TODO: Implement the training phase forward pass for inverted dropout.   #
     # Store the dropout mask in the mask variable.                            #
     ###########################################################################
-    mask = (np.random.rand(*x.shape) > p) 
-    out = x * mask / (1 - p)
+    mask = (np.random.rand(*x.shape) > p) / (1 - p)
+    out = x * mask
     ###########################################################################
     #                            END OF YOUR CODE                             #
     ###########################################################################
